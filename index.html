@@ -15,11 +15,11 @@
                 const response = await fetch("cases.csv");
                 const data = await response.text();
 
-                const table = data.split("\n").slice(3); // Split data by newline 
+                const table = data.split("\n").slice(3); // Split data by newline, start from first day of confirmed positive case 
 
                 table.forEach(row => {
                     const cols = row.split(",");
-                    const date = cols[1];
+                    const date = cols[1].slice(0, 10); // Format date
                     const confirmedPos = cols[5];
                     console.log(date, confirmedPos);
                 })
