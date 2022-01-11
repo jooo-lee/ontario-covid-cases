@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>ON Covid Graph</title>
+    </head>
+    <body>
+        <script>
+            // Data from https://data.ontario.ca/dataset/status-of-covid-19-cases-in-ontario/resource/ed270bb8-340b-41f9-a7c6-e8ef587e6d11
+
+            getData();
+
+            async function getData() {
+                const response = await fetch("cases.csv");
+                const data = await response.text();
+
+                const table = data.split("\n").slice(3); // Split data by newline 
+
+                table.forEach(row => {
+                    const cols = row.split(",");
+                    const date = cols[1];
+                    const confirmedPos = cols[5];
+                    console.log(date, confirmedPos);
+                })
+            }
+
+        </script>
+    </body>
+</html>
