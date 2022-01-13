@@ -1,30 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>ON Covid Graph</title>
-    </head>
-    <body>
-        <script>
-            // Data from https://data.ontario.ca/dataset/status-of-covid-19-cases-in-ontario/resource/ed270bb8-340b-41f9-a7c6-e8ef587e6d11
 
-            getData();
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ON Covid Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+</head>
 
-            async function getData() {
-                const response = await fetch("cases.csv");
-                const data = await response.text();
+<body>
+    <canvas id="chart" width="1000" height="400"></canvas>
+    <script>
 
-                const table = data.split("\n").slice(3); // Split data by newline, start from first day of confirmed positive case 
+        // Can try to update csv file by downloading once a day?
 
-                table.forEach(row => {
-                    const cols = row.split(",");
-                    const date = cols[1].slice(0, 10); // Format date
-                    const confirmedPos = cols[5];
-                    console.log(date, confirmedPos);
-                })
-            }
+        chartIt();
 
-        </script>
-    </body>
+        async function chartIt() {
+            const data = await getData(); // Wait for getData() to finish running first
+            // Chart.js library
+            const ctx = document.getElementById("chart").getContext("2d");
+            const myChart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: data.xs,
+                    datasets: [{
+                        label: "Number of Confirmed Positive Cases",
+                        data: data.ys,
+                        pointRadius: 0,
+                        backgroundColor: ["rgba(255, 99, 132, 0.2)"],
+                        borderColor: ["rgba(255, 99, 132, 1)"],
+                        borderWidth: 1
+                    }]
+                },
+            });
+        }
+
+        // Data from https://data.ontario.ca/dataset/status-of-covid-19-cases-in-ontario/resource/ed270bb8-340b-41f9-a7c6-e8ef587e6d11
+
+        async function getData() {
+            const xs = [];
+            const ys = [];
+            const response = await fetch("cases.csv");
+            const data = await response.text();
+
+            const table = data.split("\n").slice(3); // Split data by newline, start from first day of confirmed positive case 
+
+            table.forEach(row => {
+                const cols = row.split(",");
+                const date = cols[1].slice(0, 10); // Format date
+                xs.push(date);
+                const confirmedPos = cols[5];
+                ys.push(confirmedPos);
+                console.log(date, confirmedPos);
+            })
+            return { xs, ys };
+        }
+
+    </script>
+</body>
+
 </html>
