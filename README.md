@@ -1,4 +1,4 @@
-# ontario-covid-cases
+# Ontario Covid-19 Cases
 
 The [Chart.js](https://www.chartjs.org/docs/latest/) library was used to graph the data. 
 
